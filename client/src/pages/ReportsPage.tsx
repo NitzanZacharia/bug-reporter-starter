@@ -1,4 +1,42 @@
+import { useState, useEffect } from 'react';
+import {useNavigate} from 'react-router-dom';
+
+interface Report {
+  id: string;
+  issueType: string; 
+  description: string;
+  contactName: string;
+  contactEmail: string;
+  status: 'NEW' | 'APPROVED' | 'RESOLVED';
+  createdAt: number;
+  approvedAt?: number;
+  attachmentUrl: string;
+}
+
 export function ReportsPage() {
+  const navigate = useNavigate();
+  const [reports, setReports] = useState<Report[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(''); 
+  useEffect(() => { 
+    const fetchReports = async () => {
+      const userStatus = localStorage.getItem('userStatus');    
+      if (userStatus !== 'admin') {
+        navigate('/report');
+        return;
+      }
+      try {
+        const response = await fetch('http://localhost:4000/api/reports');
+        const data = await response.json();
+        setReports(data);
+      } catch (err) {
+        setError('Failed to fetch reports.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchReports();
+  }, [navigate]);
 
   return (
     <div className="page">

@@ -105,6 +105,19 @@ app.post('/api/reports', (req: Request, res: Response) => {
   res.status(201).json(newReport);
 });
 
+//check status
+app.get('/api/check-status', (req: Request, res: Response) => {
+  const { email } = req.query;
+  if (!email || typeof email !== 'string') { //very basic validation - will add a better one later if time allows
+    return res.status(400).json({ error: 'Email is required' });
+  }
+  const userStatus = userStatuses.find((entry) => entry.email.toLowerCase() === email.toLowerCase());
+  if (userStatus) {
+    return res.json(userStatus);
+  }
+  return res.json({ email, status: 'allowed' }); // Default to allowed regular user if not found
+});
+
 // Health check
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });

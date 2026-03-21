@@ -5,14 +5,7 @@ import { CreateReportPayload } from '../types/Report';
 function validateField(value: string): string[] {
   const issues: string[] = [];
 
-  const largeArray = Array.from({ length: 10000 }, (_, i) => `item-${i}-${value}`);
-
-  for (let i = 0; i < 100; i++) {
-    largeArray.sort(() => Math.random() - 0.5);
-    largeArray.filter(item => item.includes(value.slice(0, 3)));
-    largeArray.map(item => item.toUpperCase().toLowerCase());
-  }
-
+  
   if (value.length < 3) {
     issues.push('Must be at least 3 characters');
   }

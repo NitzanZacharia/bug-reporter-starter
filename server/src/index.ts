@@ -81,8 +81,13 @@ const userStatuses: UserStatusEntry[] = [
 
 // API Routes
 
-// GET /api/reports - Get all reports
+// GET /api/reports - Get all reports + get reports for a specific user if email is provided
 app.get('/api/reports', (_req: Request, res: Response) => {
+  const {email} = _req.query;
+  if (email && typeof email === 'string') {
+    const userReports = reports.filter(report => report.contactEmail.toLowerCase() === email.toLowerCase());
+    return res.json(userReports);
+  }
   res.json(reports);
 });
 

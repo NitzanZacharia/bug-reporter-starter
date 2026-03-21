@@ -108,7 +108,7 @@ export function ReportPage() {
     <div className="page">
       <h1>Report a Bug</h1>
       {error && <div className="error">{error}</div>}
-      {successMessage && <div className="success">{successMessage}</div>}
+      {successMessage && <div style={{ color: 'green', backgroundColor: '#dcfce7', padding: '1rem', marginBottom: '1rem', borderRadius: '4px' }}>{successMessage}</div>}
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
           <label htmlFor="issueType">Issue Type</label>

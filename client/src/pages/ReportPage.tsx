@@ -21,7 +21,7 @@ export function ReportPage() {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [successMessage, setSuccessMessage] = useState('');
   const validTypes = ['image/png', 'image/jpeg', 'application/pdf'];
   const maxFileSize = 5 * 1024 * 1024; // 5MB
   // file upload and validation
@@ -53,6 +53,7 @@ export function ReportPage() {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
+    setSuccessMessage('');
     // inline validation for required fields
     if (!issueType) {
       setError('Please select an issue type.');
@@ -89,6 +90,13 @@ export function ReportPage() {
     };
 
     await apiClient.createReport(payload);
+    setSuccessMessage('Report submitted successfully!');
+    // Clear form fields
+    setIssueType('');
+    setDescription('');
+    setContactName('');
+    setContactEmail('');
+    setFile(null);
   } catch (err) {
     setError('Failed to submit report. Please try again later.');
   } finally {
@@ -98,16 +106,24 @@ export function ReportPage() {
   return (
     <div className="page">
       <h1>Report a Bug</h1>
-
+      {error && <div className="error">{error}</div>}
+      {successMessage && <div className="success">{successMessage}</div>}
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
           <label htmlFor="issueType">Issue Type</label>
-          <input
+          <select
             id="issueType"
             value={issueType}
             onChange={(e) => setIssueType(e.target.value)}
-            placeholder="Select issue type (replace with dropdown)"
-          />
+            required
+            > 
+            <option value="" disabled>Select an issue type</option>
+            <option value="Bug">Bug</option>
+            <option value="Feature Request">Feature Request</option>
+            <option value="Improvement">Improvement</option>
+            <option value="Documentation">Documentation</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
 
         <div className="form-group">

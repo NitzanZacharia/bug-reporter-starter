@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-do
 import { LoginPage } from './pages/LoginPage';
 import { ReportPage } from './pages/ReportPage';
 import { ReportsPage } from './pages/ReportsPage';
+import { MyReportsPage } from './pages/MyReportsPage';
 import './App.css';
 
 function App() {
@@ -26,6 +27,11 @@ function App() {
                 Reports List
               </NavLink>
             </li>
+            <li>
+              <NavLink to="/my-reports" className={({ isActive }) => isActive ? 'active' : ''}>
+                My Reports
+              </NavLink>
+            </li>
           </ul>
         </nav>
 
@@ -35,6 +41,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/report" element={<ReportPage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/my-reports" element={<MyReportsPage />} />
           </Routes>
         </main>
       </div>

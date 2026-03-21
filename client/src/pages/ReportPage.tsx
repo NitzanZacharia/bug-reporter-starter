@@ -87,6 +87,7 @@ export function ReportPage() {
       description,
       contactName,
       contactEmail,
+      file
     };
 
     await apiClient.createReport(payload);
@@ -102,7 +103,7 @@ export function ReportPage() {
   } finally {
     setIsSubmitting(false);
   };
-
+  }
   return (
     <div className="page">
       <h1>Report a Bug</h1>
@@ -134,6 +135,7 @@ export function ReportPage() {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Describe the issue..."
             rows={5}
+            required
           />
           {descriptionValidation.length > 0 && (
             <span className="validation-hint">
@@ -150,6 +152,7 @@ export function ReportPage() {
             value={contactName}
             onChange={(e) => setContactName(e.target.value)}
             placeholder="Enter your name"
+            required
           />
           {nameValidation.length > 0 && (
             <span className="validation-hint">
@@ -165,26 +168,26 @@ export function ReportPage() {
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
             placeholder="Enter your email"
+            required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="attachment">Attachment (optional)</label>
+          <label htmlFor="attachment">Attachment (optional: PNG, JPG, or PDF, max 5MB)</label>
           <input
             type="file"
             id="attachment"
-            disabled
-            title="TODO: Implement file upload"
+            accept=".png, .jpg, .jpeg, .pdf"
+            onChange={handleFileChange}
           />
-          <small className="form-hint">
-            TODO: Implement attachment upload (PNG, JPG, PDF, max 5MB)
-          </small>
+          
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Submit Report
+        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit Report'}
         </button>
       </form>
     </div>
   );
-}
+
+  }

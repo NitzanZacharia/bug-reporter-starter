@@ -38,7 +38,7 @@ export function ReportsPage() {
     fetchReports();
   }, [navigate]);
 
-  const handleStatusChange = async (reportId: string, newStatus: 'APPROVED' | 'RESOLVED') => {
+  const handleStatusChange = async (reportId: string, newStatus: 'approve' | 'resolve') => {
     try {
       const response = await fetch(`http://localhost:4000/api/reports/${reportId}/${newStatus}`, {
         method: 'POST',
@@ -47,10 +47,9 @@ export function ReportsPage() {
         throw new Error('Failed to update report status.');
       }
       const updatedReport = await response.json();
-      // Update the report status in the local state
       setReports(prevReports =>
         prevReports.map(report =>
-          report.id === reportId ? { ...report, status: newStatus } : report
+          report.id === reportId ? updatedReport : report
         )
       );
     } catch (err) {
@@ -131,7 +130,7 @@ export function ReportsPage() {
                 {report.status === 'NEW' && (
                   <button
                     className="btn btn-success"
-                    onClick={() => handleStatusChange(report.id, 'APPROVED')}
+                    onClick={() => handleStatusChange(report.id, 'approve')}
                   >
                     Approve
                   </button>
@@ -139,7 +138,7 @@ export function ReportsPage() {
                 {report.status === 'APPROVED' && (
                   <button
                     className="btn btn-primary"
-                    onClick={() => handleStatusChange(report.id, 'RESOLVED')}
+                    onClick={() => handleStatusChange(report.id, 'resolve')}
                   >
                     Resolve
                   </button>

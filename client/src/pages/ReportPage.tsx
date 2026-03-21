@@ -18,13 +18,69 @@ export function ReportPage() {
   const [description, setDescription] = useState('');
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const validTypes = ['image/png', 'image/jpeg', 'application/pdf'];
+  const maxFileSize = 5 * 1024 * 1024; // 5MB
+  // file upload and validation
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) {
+      setFile(null);
+      return;
+    }
+    
+ 
+
+  if( !validTypes.includes(selectedFile.type) ) {
+    setError('Invalid file type: Only PNG, JPG, and PDF are allowed.');
+    setFile(null);
+    return;
+  }
+    if (selectedFile.size > maxFileSize) {
+      setError('File size exceeds 5MB limit.');
+      setFile(null);
+      return;
+    }
+  setFile(selectedFile);
+  };
   const descriptionValidation = validateField(description);
   const nameValidation = validateField(contactName);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError('');
+    // inline validation for required fields
+    if (!issueType) {
+      setError('Please select an issue type.');
+      setIsSubmitting(false);
+      return;
+    }
 
+    const descriptionIssues = validateField(description);
+    if (descriptionIssues.length > 0) {
+      setError('Description error: ' + descriptionIssues.join(', '));
+      setIsSubmitting(false);
+      return;
+    }
+
+    const nameIssues = validateField(contactName);
+    if (nameIssues.length > 0) {
+      setError('Name error: ' + nameIssues.join(', '));
+      setIsSubmitting(false);
+      return;
+    }
+
+    const isValidEmail = contactEmail && /^\S+@\S+\.\S+$/.test(contactEmail);
+    if (!isValidEmail) {
+      setError('Invalid email format.');
+      setIsSubmitting(false);
+      return;
+    }
+  try {
     const payload: CreateReportPayload = {
       issueType,
       description,
@@ -32,8 +88,11 @@ export function ReportPage() {
       contactEmail,
     };
 
-      await apiClient.createReport(payload);
-
+    await apiClient.createReport(payload);
+  } catch (err) {
+    setError('Failed to submit report. Please try again later.');
+  } finally {
+    setIsSubmitting(false);
   };
 
   return (

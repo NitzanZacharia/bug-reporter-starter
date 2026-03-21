@@ -93,7 +93,7 @@ app.get('/api/reports', (_req: Request, res: Response) => {
 
 // POST /api/reports - Create a new report
 app.post('/api/reports', (req: Request, res: Response) => {
-  const { issueType, description, contactName, contactEmail } = req.body;
+  const { issueType, description, contactName, contactEmail, attachment} = req.body;
 
   const newReport: Report = {
     id: uuidv4(),
@@ -103,7 +103,7 @@ app.post('/api/reports', (req: Request, res: Response) => {
     contactEmail: contactEmail || '',
     status: 'NEW',
     createdAt: Date.now(),
-    attachmentUrl: '/uploads/placeholder.txt'
+    attachmentUrl: attachment ? '/uploads/${attachment}' : ''
   };
 
   reports.push(newReport);

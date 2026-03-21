@@ -87,7 +87,7 @@ export function ReportPage() {
       description,
       contactName,
       contactEmail,
-      file
+      attachment: file ? file.name : null
     };
 
     await apiClient.createReport(payload);

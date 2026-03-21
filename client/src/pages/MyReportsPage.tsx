@@ -72,7 +72,7 @@ export function MyReportsPage() {
       <h1>Reports List</h1>
 
       <p className="placeholder-text">
-        <strong>My Submitted Reports.</strong> 
+        <strong>My Submitted Reports:</strong> 
       </p>
 
       {reports.length === 0 ? (

@@ -15,5 +15,5 @@ export interface CreateReportPayload {
   description: string;
   contactName: string;
   contactEmail: string;
-  file?: File | null; // Optional file attachment
+  attachment?: string | null; // Optional file attachment
 }

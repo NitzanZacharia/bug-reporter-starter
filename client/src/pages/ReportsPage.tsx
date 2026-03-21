@@ -38,35 +38,120 @@ export function ReportsPage() {
     fetchReports();
   }, [navigate]);
 
+  const handleStatusChange = async (reportId: string, newStatus: 'APPROVED' | 'RESOLVED') => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/reports/${reportId}/${newStatus}`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update report status.');
+      }
+      const updatedReport = await response.json();
+      // Update the report status in the local state
+      setReports(prevReports =>
+        prevReports.map(report =>
+          report.id === reportId ? { ...report, status: newStatus } : report
+        )
+      );
+    } catch (err) {
+      setError('Failed to update report status.');
+    }
+  };
+
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+  }
+  if (isLoading) {
+    return (
+      <div className="page">
+        <h1>Reports List</h1>
+        <p>Loading reports...</p>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="page">  
+        <h1>Reports List</h1>
+        <p className="error">{error}</p>
+      </div>
+    );
+  }
   return (
     <div className="page">
       <h1>Reports List</h1>
 
       <p className="placeholder-text">
-        <strong>Admin Only:</strong> This page should only be accessible to admin users.
+        <strong>You're signed in as Admin.</strong> 
       </p>
 
-      <p className="placeholder-text">
-        TODO: Implement reports list with loading, error, and empty states.
-      </p>
+      {reports.length === 0 ? (
+        <p>No reports found.</p>
+      ) : (
 
-      <button className="btn btn-secondary" disabled>
-        Load Reports
-      </button>
-
+      
       <div className="placeholder-box">
-        <p>Reports will be displayed here.</p>
-        <p>Each report should show:</p>
-        <ul>
-          <li>Issue type and description</li>
-          <li>Contact name and email</li>
-          <li>Status (NEW / APPROVED / RESOLVED)</li>
-          <li>Created date</li>
-          <li>Approved date (if applicable)</li>
-          <li>Attachment link</li>
-          <li>Action buttons (Approve / Resolve)</li>
-        </ul>
+        <table style={{width: '100%'}}>
+        <thead>
+          <tr style={{ borderBottom: '2px solid #ccc'}}>
+            <th>Reporter</th>
+            <th>Issue</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Attachment</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {reports.map(report => (
+            <tr key={report.id}>
+              <td>{report.contactName}</td>
+              <td>{report.issueType}</td>
+              <td>{report.description}</td>
+              <td>{report.status}</td>
+              <td style={{ padding: '0.5rem'}}>
+                <div>Created: {formatDate(report.createdAt)}</div>
+                {report.approvedAt && (
+                  <div>Approved: {formatDate(report.approvedAt)}</div>
+                )}
+              </td>
+              <td style={{ padding: '0.5rem'}}>
+                {report.attachmentUrl ? (
+                  <a href={'http://localhost:4000' + report.attachmentUrl} target="_blank" rel="noopener noreferrer">
+                    Download
+                  </a>
+                ) : (
+                  'No attachment'
+                )}
+              </td>
+             
+              <td>
+                {report.status === 'NEW' && (
+                  <button
+                    className="btn btn-success"
+                    onClick={() => handleStatusChange(report.id, 'APPROVED')}
+                  >
+                    Approve
+                  </button>
+                )}
+                {report.status === 'APPROVED' && (
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleStatusChange(report.id, 'RESOLVED')}
+                  >
+                    Resolve
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        </table>
       </div>
+
+     )}
     </div>
   );
 }

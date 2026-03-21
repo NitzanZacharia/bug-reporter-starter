@@ -18,6 +18,7 @@ export function ReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(''); 
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'NEW' | 'APPROVED' | 'RESOLVED'>('NEW');
   useEffect(() => { 
     const fetchReports = async () => {
       const userStatus = localStorage.getItem('userStatus');    
@@ -61,6 +62,12 @@ export function ReportsPage() {
     const date = new Date(timestamp);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   }
+
+  const displayReports = reports.filter(report => statusFilter === 'ALL' || report.status === statusFilter).sort((a, b) => {
+    if (a.issueType == 'Bug' && b.issueType != 'Bug') return -1;
+    if (a.issueType != 'Bug' && b.issueType == 'Bug') return 1;
+    return a.createdAt - b.createdAt;
+  });
   if (isLoading) {
     return (
       <div className="page">
@@ -84,8 +91,21 @@ export function ReportsPage() {
       <p className="placeholder-text">
         <strong>You're signed in as Admin.</strong> 
       </p>
+      <div className="filter-container">
+        <label htmlFor="statusFilter">Filter by status:</label>
+        <select
+          id="statusFilter"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as any)}
+        >
+          <option value="ALL">All</option>
+          <option value="NEW">New</option>
+          <option value="APPROVED">Approved</option>
+          <option value="RESOLVED">Resolved</option>
+        </select>
+      </div>
 
-      {reports.length === 0 ? (
+      {displayReports.length === 0 ? (
         <p>No reports found.</p>
       ) : (
 
@@ -104,7 +124,7 @@ export function ReportsPage() {
           </tr>
         </thead>
         <tbody>
-          {reports.map(report => (
+          {displayReports.map(report => (
             <tr key={report.id}>
               <td>{report.contactName}</td>
               <td>{report.issueType}</td>

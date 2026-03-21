@@ -105,6 +105,35 @@ app.post('/api/reports', (req: Request, res: Response) => {
   res.status(201).json(newReport);
 });
 
+// POST /api/reports/:id/approve - Approve a report
+app.post('/api/reports/:id/approve', (req: Request, res: Response) => {
+  const { id } = req.params;
+  const report = reports.find(r => r.id === id);
+  if (!report) {
+    return res.status(404).json({ error: 'Report not found' });
+  }
+  if (report.status !== 'NEW') {
+    return res.status(400).json({ error: 'Only new reports can be approved' });
+  }
+  report.status = 'APPROVED';
+  report.approvedAt = Date.now();
+  res.json(report);
+});
+
+// POST /api/reports/:id/resolve - Resolve a report
+app.post('/api/reports/:id/resolve', (req: Request, res: Response) => {
+  const { id } = req.params;
+  const report = reports.find(r => r.id === id);
+  if (!report) {
+    return res.status(404).json({ error: 'Report not found' });
+  }
+  if (report.status !== 'APPROVED') {
+    return res.status(400).json({ error: 'Only approved reports can be resolved' });
+  }
+  report.status = 'RESOLVED';
+  res.json(report);
+});
+
 //check status
 app.get('/api/check-status', (req: Request, res: Response) => {
   const { email } = req.query;

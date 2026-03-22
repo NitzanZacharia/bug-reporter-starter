@@ -44,6 +44,9 @@ function App() {
             <Route path="/my-reports" element={<MyReportsPage />} />
           </Routes>
         </main>
+        <footer className="app-footer">
+          Need help? Contact us at: <a href="mailto:help@gmail.com">help@gmail.com</a>
+        </footer>
       </div>
     </BrowserRouter>
   );

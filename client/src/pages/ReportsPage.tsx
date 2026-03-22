@@ -118,6 +118,7 @@ export function ReportsPage() {
     document.body.removeChild(link);
   };
   
+  
   return (
     <div className="page">
       <h1>Reports List</h1>

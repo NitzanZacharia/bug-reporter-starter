@@ -104,6 +104,31 @@ export function ReportPage() {
     setIsSubmitting(false);
   };
   }
+  const handleCaptureScreen = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const video = document.createElement('video');
+      
+      video.srcObject = stream;
+      await video.play(); 
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+      stream.getTracks().forEach(track => track.stop());
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const screenshotFile = new File([blob], `screenshot-${Date.now()}.png`, { type: 'image/png' });
+          setFile(screenshotFile);
+          setError(''); 
+        }
+      }, 'image/png');
+
+    } catch (err) {
+      console.log('Screenshot cancelled or failed', err);
+    }
+  };
   return (
     <div className="page">
       <h1>Report a Bug</h1>
@@ -179,9 +204,34 @@ export function ReportPage() {
             id="attachment"
             accept=".png, .jpg, .jpeg, .pdf"
             onChange={handleFileChange}
+            key={file ? file.name : 'empty'}
           />
+          <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>OR</span>
+            
+            <button 
+              type="button" 
+              onClick={handleCaptureScreen}
+              style={{ 
+                backgroundColor: '#efefef', 
+                color: '#000', 
+                border: '1px solid #767676', 
+                padding: '2px 6px', 
+                borderRadius: '3px', 
+                fontSize: '15.33px', 
+                cursor: 'pointer',
+                fontFamily: 'Arial, sans-serif',
+                width: 'fit-content',
+                whiteSpace: 'nowrap',
+                flex: 'none'
+              }}
+            >
+              Capture Screen
+            </button>
+          </div>
           
-        </div>
+          {file && <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#059669' }}>
+            Attached: {file.name}
+          </div>}
 
         <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'Submit Report'}

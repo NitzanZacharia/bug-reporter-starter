@@ -119,7 +119,8 @@ export function ReportsPage() {
             <th>Issue</th>
             <th>Description</th>
             <th>Status</th>
-            <th>Date</th>
+            <th>Created</th>
+            <th>Updated</th>
             <th>Attachment</th>
             <th>Actions</th>
           </tr>
@@ -133,12 +134,13 @@ export function ReportsPage() {
               <td>
                 <span className={`status-badge badge-${report.status.toLowerCase()}`}>{report.status}</span>
               </td>
-              <td style={{ padding: '0.5rem'}}>
-                <div>{formatDate(report.createdAt)}</div>
-                {report.approvedAt && (
-                  <div>Approved: {formatDate(report.approvedAt)}</div>
-                )}
+              <td>
+                {formatDate(report.createdAt)}
               </td>
+              <td>
+                {report.approvedAt ? formatDate(report.approvedAt) : '-'}
+              </td>
+             
               <td style={{ padding: '0.5rem'}}>
                 {report.attachmentUrl ? (
                   <a href={'http://localhost:4000' + report.attachmentUrl} target="_blank" rel="noopener noreferrer">

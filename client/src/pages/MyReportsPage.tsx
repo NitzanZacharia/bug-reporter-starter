@@ -81,13 +81,14 @@ export function MyReportsPage() {
 
       
       <div className="placeholder-box">
-        <table style={{width: '100%'}}>
+        <table className="simple-table">
         <thead>
           <tr style={{ borderBottom: '2px solid #ccc'}}>
             
             <th>Issue</th>
             <th>Description</th>
-            <th>Date</th>
+            <th>Created</th>
+            <th>Approved</th>
             <th>Attachment</th>
             <th>Status</th>
           </tr>
@@ -97,11 +98,13 @@ export function MyReportsPage() {
             <tr key={report.id}>
               <td>{report.issueType}</td>
               <td>{report.description}</td>
-              <td style={{ padding: '0.5rem'}}>
-                <div>{formatDate(report.createdAt)}</div>
-                {report.approvedAt && (
-                  <div>Approved: {formatDate(report.approvedAt)}</div>
-                )}
+              <td>
+                {formatDate(report.createdAt)}
+              </td>
+              
+              
+              <td>
+                {report.approvedAt ? formatDate(report.approvedAt) : '-'}
               </td>
               <td style={{ padding: '0.5rem'}}>
                 {report.attachmentUrl ? (

@@ -84,6 +84,7 @@ export function ReportsPage() {
       </div>
     );
   }
+  
   return (
     <div className="page">
       <h1>Reports List</h1>
@@ -111,7 +112,7 @@ export function ReportsPage() {
 
       
       <div className="placeholder-box">
-        <table style={{width: '100%'}}>
+        <table className="simple-table">
         <thead>
           <tr style={{ borderBottom: '2px solid #ccc'}}>
             <th>Reporter</th>
@@ -129,9 +130,11 @@ export function ReportsPage() {
               <td>{report.contactName}</td>
               <td>{report.issueType}</td>
               <td>{report.description}</td>
-              <td>{report.status}</td>
+              <td>
+                <span className={`status-badge badge-${report.status.toLowerCase()}`}>{report.status}</span>
+              </td>
               <td style={{ padding: '0.5rem'}}>
-                <div>Created: {formatDate(report.createdAt)}</div>
+                <div>{formatDate(report.createdAt)}</div>
                 {report.approvedAt && (
                   <div>Approved: {formatDate(report.approvedAt)}</div>
                 )}
@@ -142,11 +145,12 @@ export function ReportsPage() {
                     Download
                   </a>
                 ) : (
-                  'No attachment'
+                  'None'
                 )}
               </td>
              
               <td>
+                
                 {report.status === 'NEW' && (
                   <button
                     className="btn btn-success"

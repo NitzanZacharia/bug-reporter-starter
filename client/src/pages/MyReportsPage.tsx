@@ -98,7 +98,7 @@ export function MyReportsPage() {
               <td>{report.issueType}</td>
               <td>{report.description}</td>
               <td style={{ padding: '0.5rem'}}>
-                <div>Submitted: {formatDate(report.createdAt)}</div>
+                <div>{formatDate(report.createdAt)}</div>
                 {report.approvedAt && (
                   <div>Approved: {formatDate(report.approvedAt)}</div>
                 )}
@@ -109,7 +109,7 @@ export function MyReportsPage() {
                     Download
                   </a>
                 ) : (
-                  'No attachment'
+                  'None'
                 )}
               </td>
              

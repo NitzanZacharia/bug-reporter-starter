@@ -84,14 +84,50 @@ export function ReportsPage() {
       </div>
     );
   }
+  //CSV Export
+  const exportToCSV = () => {
+    
+    const headers = ['ID', 'Reporter Name', 'Reporter Email', 'Issue Type', 'Status', 'Created At', 'Approved At', 'Description'];
+
+    
+    const rows = displayReports.map(report => [
+      report.id,
+      `"${report.contactName}"`, 
+      report.contactEmail,
+      report.issueType,
+      report.status,
+      `"${new Date(report.createdAt).toLocaleString()}"`,
+      report.approvedAt ? `"${new Date(report.approvedAt).toLocaleString()}"` : '',
+      `"${report.description.replace(/"/g, '""')}"` 
+    ]);
+
+    
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `bug_reports_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   
   return (
     <div className="page">
       <h1>Reports List</h1>
-
+      
       <p className="placeholder-text">
         <strong>You're signed in as Admin.</strong> 
       </p>
+      <button className="btn btn-secondary" onClick={exportToCSV} style={{ marginBottom: '1rem' }}>
+        Export to CSV
+      </button>
       <div className="filter-container">
         <label htmlFor="statusFilter">Filter by status:</label>
         <select

@@ -17,7 +17,7 @@ export function ReportPage() {
   const [issueType, setIssueType] = useState('');
   const [description, setDescription] = useState('');
   const [contactName, setContactName] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
+  const [contactEmail, setContactEmail] = useState(localStorage.getItem('userEmail') || '');
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
